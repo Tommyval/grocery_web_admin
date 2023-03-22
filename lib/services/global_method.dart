@@ -57,4 +57,35 @@ class GlobalMethods {
           );
         });
   }
+
+  static Future<void> errorDialog({
+    required BuildContext context,
+    required subTitle,
+  }) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/images/warning-sign.png',
+                  height: 20,
+                  width: 20,
+                ),
+                const SizedBox(width: 8),
+                const Text('An error occured'),
+              ],
+            ),
+            content: Text(subTitle),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ok')),
+            ],
+          );
+        });
+  }
 }

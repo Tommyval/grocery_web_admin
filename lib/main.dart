@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_admin_panel/inner_screens/add_prod.dart';
 import 'package:grocery_admin_panel/screens/main_screen.dart';
@@ -32,33 +33,47 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-//final Future<FirebaseApp> _firebaseInitialization = Firebase.initializeApp();
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => MenuController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) {
-            return themeChangeProvider;
-          },
-        ),
-      ],
-      child: Consumer<DarkThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Grocery',
-              theme: Styles.themeData(themeProvider.getDarkTheme, context),
-              home: const MainScreen(),
-              routes: {
-                UploadProductForm.routeName: (context) =>
-                    const UploadProductForm()
-              });
-        },
-      ),
-    );
+    return FutureBuilder(
+        future: _initialization,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const MaterialApp(
+              home: Scaffold(body: Center(child: CircularProgressIndicator())),
+            );
+          } else if (snapshot.hasError) {
+            const MaterialApp(
+              home: Scaffold(body: Center(child: Text('An error occured'))),
+            );
+          }
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                create: (_) => MenuController(),
+              ),
+              ChangeNotifierProvider(
+                create: (_) {
+                  return themeChangeProvider;
+                },
+              ),
+            ],
+            child: Consumer<DarkThemeProvider>(
+              builder: (context, themeProvider, child) {
+                return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title: 'Grocery',
+                    theme:
+                        Styles.themeData(themeProvider.getDarkTheme, context),
+                    home: const MainScreen(),
+                    routes: {
+                      UploadProductForm.routeName: (context) =>
+                          const UploadProductForm()
+                    });
+              },
+            ),
+          );
+        });
   }
 }

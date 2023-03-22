@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_admin_panel/controllers/MenuController.dart';
+import 'package:grocery_admin_panel/services/global_method.dart';
 import 'package:grocery_admin_panel/services/utils.dart';
 import 'package:grocery_admin_panel/widgets/buttons.dart';
 import 'package:grocery_admin_panel/widgets/header.dart';
@@ -13,6 +15,7 @@ import 'package:grocery_admin_panel/widgets/text_widget.dart';
 import 'package:iconly/iconly.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import '../responsive.dart';
 
 class UploadProductForm extends StatefulWidget {
@@ -59,8 +62,44 @@ class _UploadProductFormState extends State<UploadProductForm> {
     });
   }
 
+  bool _isLoading = false;
   void _uploadForm() async {
     final isValid = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _isLoading = true;
+    });
+    if (isValid) {
+      _formKey.currentState!.save();
+      final _uuid = const Uuid().v4();
+      try {
+        FirebaseFirestore.instance.collection('products').doc(_uuid).set({
+          'id': _uuid,
+          'title': _titleController.text,
+          'price': _priceController.text,
+          'salePrice': 0.1,
+          'imageUrl': '',
+          'productCategoriesName': _cartValue,
+          'isOnSale': false,
+          'isPiece': isPiece,
+          'createAt': Timestamp.now()
+        });
+      } on FirebaseException catch (err) {
+        GlobalMethods.errorDialog(context: context, subTitle: '${err.message}');
+        setState(() {
+          _isLoading = false;
+        });
+      } catch (err) {
+        GlobalMethods.errorDialog(context: context, subTitle: '$err');
+        setState(() {
+          _isLoading = false;
+        });
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
