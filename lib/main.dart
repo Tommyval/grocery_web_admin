@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_admin_panel/inner_screens/add_prod.dart';
+import 'package:grocery_admin_panel/inner_screens/edit_prod.dart';
 import 'package:grocery_admin_panel/screens/main_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,15 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  static final Future<FirebaseApp> _initialization = Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyDSvgX99uxSew3JjfRHBuzoKk_IEE6eRNA",
+          authDomain: "grocery-flutter-course-f7e3d.firebaseapp.com",
+          projectId: "grocery-flutter-course-f7e3d",
+          storageBucket: "grocery-flutter-course-f7e3d.appspot.com",
+          messagingSenderId: "1057783779334",
+          appId: "1:1057783779334:web:868465fe38b50e838f7387",
+          measurementId: "G-N3EB8M770Y"));
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -69,7 +78,9 @@ class _MyAppState extends State<MyApp> {
                     home: const MainScreen(),
                     routes: {
                       UploadProductForm.routeName: (context) =>
-                          const UploadProductForm()
+                          const UploadProductForm(),
+                      EditProductScreen.routeName: (context) =>
+                          const EditProductScreen()
                     });
               },
             ),
