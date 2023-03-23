@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "1057783779334",
+    "project_id": "grocery-flutter-course-f7e3d",
+    "storage_bucket": "grocery-flutter-course-f7e3d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057783779334:android:937ce9b6eb2e59048f7387",
+        "android_client_info": {
+          "package_name": "com.example.grocery_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1057783779334-71ug5im7b7sa7cqrejul8ca50cq4m05l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grocery_app",
+            "certificate_hash": "af959f7357c689a4880362fbc73b5479d91f728e"
+          }
+        },
+        {
+          "client_id": "1057783779334-beo7ldf23d7khn46fh6bh9ucu0bsu363.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLxnYd8CZlNvk-ZdastglW7rHKzm7yB2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1057783779334-beo7ldf23d7khn46fh6bh9ucu0bsu363.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057783779334:android:8a6adf1b45bf8e528f7387",
+        "android_client_info": {
+          "package_name": "com.example.grocery_web_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1057783779334-beo7ldf23d7khn46fh6bh9ucu0bsu363.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLxnYd8CZlNvk-ZdastglW7rHKzm7yB2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1057783779334-beo7ldf23d7khn46fh6bh9ucu0bsu363.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
