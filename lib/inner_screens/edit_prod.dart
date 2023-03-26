@@ -22,9 +22,22 @@ import 'package:uuid/uuid.dart';
 import '../responsive.dart';
 
 class EditProductScreen extends StatefulWidget {
-  static const routeName = '/EditProductScreen';
+  // static const routeName = '/EditProductScreen';
 
-  const EditProductScreen({Key? key}) : super(key: key);
+  const EditProductScreen(
+      {Key? key,
+      required this.id,
+      required this.title,
+      required this.price,
+      required this.productCat,
+      required this.imageUrl,
+      required this.isPiece,
+      required this.isOnSale,
+      required this.salePrice})
+      : super(key: key);
+  final String id, title, price, productCat, imageUrl;
+  final bool isPiece, isOnSale;
+  final double salePrice;
 
   @override
   _EditProductScreenState createState() => _EditProductScreenState();
@@ -55,12 +68,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   @override
   void initState() {
-    _priceController = TextEditingController(text: '');
-    _titleController = TextEditingController(text: '');
-    _salePrice = 0.8;
-    _cartValue = 'vegetables';
-    _isOnSale = false;
-    _isPiece = false;
+    _priceController = TextEditingController(text: widget.price);
+    _titleController = TextEditingController(text: widget.title);
+    _salePrice = widget.salePrice;
+    _cartValue = widget.productCat;
+    _isOnSale = widget.isOnSale;
+    _isPiece = widget.isPiece;
+    val = _isPiece ? 2 : 1;
+    _imageUrl = widget.imageUrl;
+    percToshow = (100 - (_salePrice - 100) / double.parse(widget.price))
+            .round()
+            .toStringAsFixed(1) +
+        '%';
 
     super.initState();
   }
@@ -321,8 +340,46 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                               activeColor: Colors.green,
                                             )
                                           ],
-                                        )
-                                        // Radio button code here
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Checkbox(
+                                                value: _isOnSale,
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    _isOnSale = newValue!;
+                                                  });
+                                                }),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        TextWidget(
+                                          text: 'sale',
+                                          color: color,
+                                          isTitle: true,
+                                        ),
+                                        AnimatedSwitcher(
+                                            duration:
+                                                const Duration(seconds: 1),
+                                            child: !_isOnSale
+                                                ? Container()
+                                                : Row(children: [
+                                                    TextWidget(
+                                                      text: '\$' +
+                                                          _salePrice
+                                                              .toStringAsFixed(
+                                                                  2),
+                                                      color: color,
+                                                    ),
+                                                    const SizedBox(width: 10),
+                                                    salePercentageDropDownWidget(
+                                                        color)
+                                                  ]))
                                       ],
                                     ),
                                   ),
@@ -342,20 +399,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(12)),
                                         child: _pickedImage == null
-                                            ? dottedBorder(color: color)
-                                            : ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                child: kIsWeb
-                                                    ? Image.memory(
-                                                        webImage,
-                                                        fit: BoxFit.fill,
-                                                      )
-                                                    : Image.file(
-                                                        _pickedImage!,
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                              )),
+                                            ? Image.network(_imageUrl)
+                                            : kIsWeb
+                                                ? Image.memory(
+                                                    webImage,
+                                                    fit: BoxFit.fill,
+                                                  )
+                                                : Image.file(
+                                                    _pickedImage!,
+                                                    fit: BoxFit.fill,
+                                                  )),
                                   ),
                                 ),
                                 Expanded(
@@ -531,5 +584,56 @@ class _EditProductScreenState extends State<EditProductScreen> {
         ),
       ),
     );
+  }
+
+  DropdownButtonHideUnderline salePercentageDropDownWidget(Color color) {
+    return DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+      items: const [
+        DropdownMenuItem<String>(
+          child: Text('10%'),
+          value: '10',
+        ),
+        DropdownMenuItem<String>(
+          child: Text('15%'),
+          value: '15',
+        ),
+        DropdownMenuItem<String>(
+          child: Text('20%'),
+          value: '20',
+        ),
+        DropdownMenuItem<String>(
+          child: Text('25%'),
+          value: '25',
+        ),
+        DropdownMenuItem<String>(
+          child: Text('50%'),
+          value: '50',
+        ),
+        DropdownMenuItem<String>(
+          child: Text('75%'),
+          value: '75',
+        ),
+        DropdownMenuItem<String>(
+          child: Text('0%'),
+          value: '0',
+        ),
+      ],
+      onChanged: (value) {
+        if (value == '0') {
+          return;
+        } else {
+          setState(() {
+            _salePercent = value;
+            _salePrice = 1;
+            // to calculate the sale price
+            // double.parse(price) -
+            //     (double.parse(value) * double.parse(price) / 100);
+          });
+        }
+      },
+      hint: Text(_salePercent ?? percToshow),
+      value: _salePercent,
+    ));
   }
 }

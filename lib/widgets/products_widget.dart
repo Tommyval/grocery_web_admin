@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_admin_panel/inner_screens/edit_prod.dart';
 import 'package:grocery_admin_panel/services/global_method.dart';
 
 import '../services/utils.dart';
@@ -18,10 +19,11 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends State<ProductWidget> {
   @override
   void initState() {
-    getUserData();
+    getProductData();
     super.initState();
   }
 
+  bool _isLoading = false;
   String title = '';
   String productCat = '';
   String? imageUrl;
@@ -30,7 +32,10 @@ class _ProductWidgetState extends State<ProductWidget> {
   bool isOnSale = false;
   bool isPiece = false;
 
-  Future<void> getUserData() async {
+  Future<void> getProductData() async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final DocumentSnapshot prodDoc = await FirebaseFirestore.instance
           .collection('products')
@@ -39,17 +44,26 @@ class _ProductWidgetState extends State<ProductWidget> {
       if (prodDoc == null) {
         return;
       } else {
-        title = prodDoc.get('title');
-        productCat = prodDoc.get('productCategoriesName');
-        imageUrl = prodDoc.get('imageUrl');
-        price = prodDoc.get('price');
-        salePrice = prodDoc.get('salePrice');
-        isOnSale = prodDoc.get('isOnSale');
-        isPiece = prodDoc.get('isPiece');
+        setState(() {
+          title = prodDoc.get('title');
+          productCat = prodDoc.get('productCategoriesName');
+          imageUrl = prodDoc.get('imageUrl');
+          price = prodDoc.get('price');
+          salePrice = prodDoc.get('salePrice');
+          isOnSale = prodDoc.get('isOnSale');
+          isPiece = prodDoc.get('isPiece');
+        });
       }
     } catch (err) {
       GlobalMethods.errorDialog(context: context, subTitle: '$err');
-    } finally {}
+      setState(() {
+        _isLoading = false;
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -64,7 +78,21 @@ class _ProductWidgetState extends State<ProductWidget> {
         color: Theme.of(context).cardColor.withOpacity(0.6),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => EditProductScreen(
+                  id: widget.id,
+                  title: title,
+                  price: price,
+                  productCat: productCat,
+                  imageUrl: imageUrl == null
+                      ? 'https://sunrisefruits.com/wp-content/uploads/2018/06/Productos-Naranja-Sunrisefruitscompany.jpg'
+                      : imageUrl!,
+                  isPiece: isPiece,
+                  isOnSale: isOnSale,
+                  salePrice: salePrice),
+            ));
+          },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -78,6 +106,8 @@ class _ProductWidgetState extends State<ProductWidget> {
                     Flexible(
                       flex: 3,
                       child: Image.network(
+                        // 'assets/images/Apricot.png',
+                        // 'https://sunrisefruits.com/wp-content/uploads/2018/06/Productos-Naranja-Sunrisefruitscompany.jpg',
                         imageUrl == null
                             ? 'https://sunrisefruits.com/wp-content/uploads/2018/06/Productos-Naranja-Sunrisefruitscompany.jpg'
                             : imageUrl!,
@@ -109,6 +139,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                 Row(
                   children: [
                     TextWidget(
+                      // '\$${3.2}',
                       text: isOnSale
                           ? '\$${salePrice.toStringAsFixed(2)}'
                           : '\$$price',
@@ -119,8 +150,11 @@ class _ProductWidgetState extends State<ProductWidget> {
                       width: 7,
                     ),
                     Visibility(
-                        visible: isOnSale,
+                        visible:
+                            //true,
+                            isOnSale,
                         child: Text(
+                          // '\$${3.2}',
                           '\$$price',
                           style: TextStyle(
                               decoration: TextDecoration.lineThrough,
@@ -138,7 +172,9 @@ class _ProductWidgetState extends State<ProductWidget> {
                   height: 2,
                 ),
                 TextWidget(
-                  text: title,
+                  text:
+                      //'pineApple',
+                      title,
                   color: color,
                   textSize: 24,
                   isTitle: true,

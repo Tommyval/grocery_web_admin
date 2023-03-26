@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_admin_panel/inner_screens/add_prod.dart';
-import 'package:grocery_admin_panel/inner_screens/edit_prod.dart';
 import 'package:grocery_admin_panel/screens/main_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -79,8 +78,8 @@ class _MyAppState extends State<MyApp> {
                     routes: {
                       UploadProductForm.routeName: (context) =>
                           const UploadProductForm(),
-                      EditProductScreen.routeName: (context) =>
-                          const EditProductScreen()
+                      // EditProductScreen.routeName: (context) =>
+                      //      EditProductScreen()
                     });
               },
             ),
