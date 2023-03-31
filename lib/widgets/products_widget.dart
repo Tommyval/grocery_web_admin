@@ -79,7 +79,7 @@ class _ProductWidgetState extends State<ProductWidget> {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
+            Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => EditProductScreen(
                   id: widget.id,
                   title: title,
@@ -176,7 +176,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                       //'pineApple',
                       title,
                   color: color,
-                  textSize: 24,
+                  textSize: 20,
                   isTitle: true,
                 ),
               ],
